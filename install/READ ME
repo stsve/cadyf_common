@@ -1,0 +1,18 @@
+
+********************************************
+*          CADYF - Installation            *
+********************************************
+
+1/ Copier les deux fichiers 'install_cadyf.sh' & 'bashrc_cadyf' sur le compte linux de Polytechnique
+2/ Vérifier que son compte est bien associé au groupe grdp
+-> commande: groups
+3/ Écrire les commandes suivantes les unes après les autres:
+
+chmod u+x install_cadyf.sh
+./install_cadyf.sh
+bash
+madoc
+mabu
+mapj
+
+cadyf devrait être installé avec succès!
