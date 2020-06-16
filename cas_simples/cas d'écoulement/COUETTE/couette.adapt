@@ -1,0 +1,62 @@
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! ADAPTIVITE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    adaptivite
+        strategie  = reduction
+        etirement  = aucun
+        cible      = 0.5
+        estimateur = zz_local
+        projection = flux
+        norme      = { energie }
+        taillemax  = 0.2
+        taillemin  = 0.0002
+        etiremax   = 1.0
+        etiremin   = 1.0
+    fin ! adaptivite
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! ESTIMATION
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    estimation
+        zz_local
+            norme = { energie }
+        fin ! zz_local
+    fin ! estimation
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! ENTREE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    entree
+        solution   = cadsol
+        definition = cadyf
+    fin ! entree
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! SORTIE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    sortie
+        solution
+            vitesse     = oui
+            temperature = oui
+            pression    = oui
+            exacte      = non
+            derivees    = oui
+            deriveexa   = non
+        fin ! solution
+        erreur
+            zz_local = { energie }
+        fin ! erreur
+        postprocesseur = vtk
+        statistiques   = sommaire
+        elements       = tria3
+        champ          = moyenne
+    fin ! sortie
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! MAILLAGE_DE_FOND
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    maillage_de_fond
+        sortie = backm2d
+    fin ! maillage_de_fond
+
+fin.
