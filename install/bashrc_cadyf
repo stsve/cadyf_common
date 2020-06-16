@@ -1,0 +1,232 @@
+# .bashrc
+
+# Bash-specific definitions
+[ "`echo "$0" | grep bash | wc -l`" -eq 1 ] && SBASH=1 || SBASH=0
+if [ "$SBASH" -eq 1 ]; then
+
+  # Source global definitions
+  [ -f /etc/bashrc ] && . /etc/bashrc
+
+  # Load bash user functions
+  [ -f $HOME/.bash_user_functions ] && . $HOME/.bash_user_functions
+
+fi
+
+# File creation mask, default rights for files is
+# -rw------- for files, drwx------ for folders
+umask 077
+
+# Bash options 
+shopt -s histappend
+shopt -s hostcomplete
+
+# User specific aliases and functions
+export HISTCONTROL=ignoreboth
+export HISTSIZE=10000
+
+function __cadyf_ps1 ()
+{
+    check_cadyf_env &> /dev/null
+    error=$?
+    if [ "$error" != "0" ]; then
+        echo " (\[\033[1;31m\]invalid CADYF opts\[\033[00m\])"
+        exit
+    fi
+
+    show=false
+    # show if in cadyf sources
+    currwd=$(readlink -f .)
+    cadyfdir=$(readlink -f $HOME/$CADYF_HOME)
+    if [ "${currwd:0:${#cadyfdir}}" = "$cadyfdir" ]; then
+        show=true
+    fi
+    # show if there is an amiral file
+    amfiles=$(ls *.amiral 2> /dev/null)
+    if [ "$amfiles" != "" ]; then
+        show=true
+    fi
+
+    if [ "$show" == true ]; then
+        echo " (\[\033[0;36m\]$CADYF_FCOMPILER-$CADYF_OPTIMIZE\[\033[00m\])"
+    fi
+}
+
+function __omp_ps1 ()
+{
+    show=false
+    # show if there is an amiral file
+    amfiles=$(ls *.amiral 2> /dev/null)
+    if [ "$amfiles" != "" ]; then
+        show=true
+    fi
+    if [ ! -z "$OMP_NUM_THREADS" -a "$show" == true ]; then
+        echo " (\[\033[0;35m\]OpenMP:$OMP_NUM_THREADS\[\033[00m\])"
+    fi
+}
+
+function __bash_prompt ()
+{
+    PS1="[\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__cadyf_ps1)$(__omp_ps1)]\$ "
+}
+
+if [[ -z "$VTE_VERSION" ]]; then
+    PROMPT_COMMAND='__bash_prompt'
+else
+    PROMPT_COMMAND='__vte_prompt_command && __bash_prompt'
+fi
+
+# Disable ccache
+export CCACHE_DISABLE=1
+
+# Disable core dumps
+ulimit -c 0
+
+# Retrieve hostname
+hostname=$(hostname -s)
+case $hostname in
+    *)
+        ;;
+esac
+
+################################################################################
+#### PATH, MANPATH, LD_LIBRARY_PATH, PYTHONPATH, ...
+################################################################################
+export PATH
+export LD_LIBRARY_PATH
+export PYTHONPATH
+export MANPATH
+export CMAKE_PREFIX_PATH
+export PKG_CONFIG_PATH
+export CLASSPATH
+
+# Put local programs here
+################################################################################
+
+################################################################################
+#### Aliases
+################################################################################
+# ls aliases
+alias ls='ls --color=auto'
+alias ll='ls -l'
+alias lh='ls -lh'
+alias lt='ls -lth'
+alias lla='ls -lah'
+
+# grep
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+################################################################################
+
+################################################################################
+#### CADYF
+################################################################################
+# Allow unlimited stack size
+# Can cause SIGSEGV if not set
+ulimit -s unlimited
+
+export OSNAME=`uname`
+export OSTYPE=`uname -m`
+export MACHINENAME=`uname -n | cut -d. -f1`
+
+export CADYF_HOME="dev/CADYF/trunk"
+export CADYF_BUILD="tmp/CADYF"
+
+alias cce=check_cadyf_env
+
+CADYF_FCOMPILER=ifort
+CADYF_OPTIMIZE=optimize # optimize debug check
+CADYF_OPTIONS=none # none profiling
+CADYF_MAKE_MTHREAD=-j24
+OMP_NUM_THREADS=4
+
+export CADYF_FCOMPILER=${CADYF_FCOMPILER:-"ifort"}
+export CADYF_OPTIMIZE=${CADYF_OPTIMIZE:-"optimize"}
+export CADYF_OPTIONS=${CADYF_OPTIONS:-"none"}
+export CADYF_MAKE_MTHREAD=${CADYF_MAKE_MTHREAD:-"-j2"}
+export OMP_NUM_THREADS=${OMP_NUM_THREADS:-"1"}
+
+# convert2tec
+export CONVERT2TEC_LONGFORMAT=1
+export CONVERT2TEC_P1SUBMESH=1
+
+# Keep track of initial environment variables
+#if [ -z "$INITIAL_PATH" ]; then
+   export INITIAL_PATH="$PATH"
+   export INITIAL_LD_RUN_PATH="$LD_RUN_PATH"
+   export INITIAL_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+#fi
+
+# Setup CADYF profile
+[ "$SBASH" -eq 1 ] && profile_setup
+
+# Change compiler
+function cadyf-gfortran {
+    CADYF_FCOMPILER=gfortran
+    [ "$SBASH" -eq 1 ] && profile_reset
+}
+function cadyf-ifort {
+    CADYF_FCOMPILER=ifort
+    [ "$SBASH" -eq 1 ] && profile_reset
+}
+
+# Change compiler options
+function cadyf-optimize {
+    CADYF_OPTIMIZE=optimize
+    [ "$SBASH" -eq 1 ] && profile_reset
+}
+function cadyf-debug {
+    CADYF_OPTIMIZE=debug
+    [ "$SBASH" -eq 1 ] && profile_reset
+}
+function cadyf-check {
+    CADYF_OPTIMIZE=check
+    [ "$SBASH" -eq 1 ] && profile_reset
+}
+
+# Change both options
+function cadyf-gfortran-optimize {
+    CADYF_FCOMPILER=gfortran
+    CADYF_OPTIMIZE=optimize
+    [ "$SBASH" -eq 1 ] && profile_reset
+}
+function cadyf-gfortran-debug {
+    CADYF_FCOMPILER=gfortran
+    CADYF_OPTIMIZE=debug
+    [ "$SBASH" -eq 1 ] && profile_reset
+}
+function cadyf-gfortran-check {
+    CADYF_FCOMPILER=gfortran
+    CADYF_OPTIMIZE=check
+    [ "$SBASH" -eq 1 ] && profile_reset
+}
+
+function cadyf-ifort-optimize {
+    CADYF_FCOMPILER=ifort
+    CADYF_OPTIMIZE=optimize
+    [ "$SBASH" -eq 1 ] && profile_reset
+}
+function cadyf-ifort-debug {
+    CADYF_FCOMPILER=ifort
+    CADYF_OPTIMIZE=debug
+    [ "$SBASH" -eq 1 ] && profile_reset
+}
+function cadyf-ifort-check {
+    CADYF_FCOMPILER=ifort
+    CADYF_OPTIMIZE=check
+    [ "$SBASH" -eq 1 ] && profile_reset
+}
+
+# Change OMP_NUM_THREADS
+function openmp_num_threads {
+    case $1 in
+        ''|*[!0-9]*)
+            echo "First argument has to be an integer"
+            ;;
+        *)
+            OMP_NUM_THREADS=$1
+            ;;
+    esac
+}
+
+################################################################################
