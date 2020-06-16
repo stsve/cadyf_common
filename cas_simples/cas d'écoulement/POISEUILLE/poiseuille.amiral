@@ -1,0 +1,178 @@
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! NOTES
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! Sur deux elements, 4 equations pour P et 3 equations pour les vitesses,
+    ! la matrice est singuliere. On peut :
+    ! - mettre un zero_pression en sortie pour enlever une equation de pression
+    ! - mettre une condition de Neumann sur v en sortie pour rajouter une
+    !   equation de vitesse
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! DESCRIPTION
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    description
+        titre                 = 'Poiseuille'
+        formulation           = mixte
+        vitesse               = {u, v, P}
+        repere                = cartesien
+        regime                = permanent
+        modele_turb           = laminaire
+        thermique             = isotherme
+        force                 = nulle
+        source_continuite     = nulle
+        source_thermique      = nulle
+        echauffement_visqueux = non
+        interface             = non
+        reactions             = non
+        young                 = non
+        adimensionnel         = non
+        pression              = continue
+        forme_faible
+            mouvement = galerkin
+        fin ! forme_faible
+    fin ! description
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! DOMAINE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    domaine
+        points
+        {
+            1 : { 0.0 , 0.0 }
+            2 : { 1.0 , 0.0 }
+            3 : { 1.0 , 1.0 }
+            4 : { 0.0 , 1.0 }
+        }
+        fin ! points
+
+        courbes
+            type = arc_p1 :
+            {
+                entree : { 4 , 1 }
+                bas    : { 1 , 2 }
+                sortie : { 2 , 3 }
+                haut   : { 3 , 4 }
+            }
+        fin ! courbes
+
+        zones
+            type = 2 :
+            {
+                fluide : { entree ,
+                           bas    ,
+                           sortie ,
+                           haut   }
+            }
+        fin ! zones
+    fin ! domaine
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! DISCRETISATION
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    discretisation
+        groupe < fluide >
+            elements = taylor6
+            npgauss  = 7
+            equation = navier-stokes
+            proprietes
+                densite   = 1.0
+                viscosite = 1.0
+            fin ! proprietes
+            zero_pression { xmin = (1. -0.000001) , xmax = (1.+ 0.000001) ,
+                            ymin = (1. -0.000001) , ymax = (1.+ 0.000001) ,
+                            zmin =      0.0       , zmax =      0.0       }
+        fin ! groupe < fluide >
+    fin ! discretisation
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! CONDITIONS_LIMITES
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    conditions_limites
+        dirichlet
+            courbe < entree >
+                {
+                    U = { 0.0 , 1.0 , 0.0 }
+                    V = 0.0
+                }
+            fin
+            courbe < sortie >
+                {
+                    V = 0.0
+                }
+            fin
+            courbe < bas >
+                {
+                    U = 0.0
+                    V = 0.0
+                }
+            fin
+            courbe < haut >
+                {
+                    U = 0.0
+                    V = 0.0
+                }
+            fin
+        fin ! dirichlet
+
+        neumann
+            courbe < sortie >
+                {
+                    U = libre
+                }
+                element = lin3
+                npgauss = 3
+            fin
+        fin ! neumann
+    fin ! conditions_limites
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! CONTROLE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    controle
+        resoluteur
+            sortie      = CADYF
+            mode        = execution
+            cond_init   = nulle
+            interpolant = quadratique
+            impression
+                globale     = tout
+                noeuds      = tout
+                elements    = tout
+                contraintes = oui
+                cond_init   = oui
+                post        = vtk
+            fin ! impression
+        fin ! resoluteur
+        mailleur
+            impression       = non
+            mode             = mailler
+            extrapolation    = 1.0d0
+            renumerotation   = profil
+            post_traitement  = non
+            relaxation
+                type        = laplacian
+                cycle       = 3
+                application = globale
+            fin ! relaxation
+        fin ! mailleur
+    fin ! controle
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! SOLUTION
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    solution
+        methode_1        = Newton
+        methode_2        = Newton
+        N*methode1       = 10
+        maximum          = 20
+        acceleration     = 1.d0
+        err_rel_locale   = 1.0e-12
+        residu_local     = 1.0e-12
+        solveur_lineaire = mklpardiso64
+        fact_adaptative  = oui
+        fada_tol_redr    = 0.1
+        fada_tol_resi    = 1.0d-5
+    fin ! solution
+
+fin.
