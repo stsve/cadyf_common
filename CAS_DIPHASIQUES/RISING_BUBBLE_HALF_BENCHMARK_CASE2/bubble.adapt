@@ -1,0 +1,63 @@
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! ADAPTIVITE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    adaptivite
+        strategie          = reduction
+        etirement          = aucun
+        cible              = 0.7d0
+        estimateur         = zz_local
+        projection         = derivee
+        norme              = { energie, deformation }
+        raffinement_usager = non
+        taillemax          = 0.2
+        taillemin          = 0.000005
+        etiremax           = 1.0
+        etiremin           = 1.0
+    fin ! adaptivite
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! ESTIMATION
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    estimation
+        zz_local
+            norme = { energie, deformation }
+        fin ! zz_local
+    fin ! estimation
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! ENTREE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    entree
+        solution   = cadsol
+        definition = cadyf
+    fin ! entree
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! SORTIE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    sortie
+        solution
+            vitesse     = oui
+            temperature = oui
+            pression    = oui
+            exacte      = non
+            derivees    = oui
+            deriveexa   = non
+        fin ! solution
+        erreur
+            zz_local = { energie, deformation }
+        fin ! erreur
+        postprocesseur = vtk
+        statistiques   = complete
+        elements       = tria3
+        champ          = moyenne
+    fin ! sortie
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! MAILLAGE_DE_FOND
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    maillage_de_fond
+        sortie = backm2d
+    fin ! maillage_de_fond
+
+fin.

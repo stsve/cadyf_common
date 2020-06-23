@@ -1,0 +1,332 @@
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! DESCRIPTION
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    description
+        titre                 = 'Surface tension test'
+        formulation           = mixte
+        vitesse               = {u, v, xsi, eta, p}
+        repere                = cartesien
+        regime                = transitoire
+        modele_turb           = laminaire
+        thermique             = isotherme
+        force                 = nulle
+        source_continuite     = nulle
+        source_thermique      = nulle
+        echauffement_visqueux = non
+        interface             = oui
+        maillage              = pseudo_solide
+        reactions             = oui
+        young                 = non
+        adimensionnel         = non
+        pression              = continue
+        forme_faible
+            mouvement = galerkin
+        fin ! forme_faible
+    fin ! description
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! DOMAINE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    domaine
+        points
+        {
+             1 : { -5.0d0 , 0.0d0 }
+             2 : { -5.0d0 , 5.0d0 }
+             3 : {  5.0d0 , 5.0d0 }
+             4 : {  5.0d0 , 0.0d0 }
+             5 : {  1.0d0 , 0.0d0 }
+             6 : {  1.0d0 , 0.0d0 }
+             7 : {  1.0d0 , 1.0d0 }
+             8 : { -1.0d0 , 1.0d0 }
+             9 : { -1.0d0 , 0.0d0 }
+            10 : { -1.0d0 , 0.0d0 }
+        }
+        fin ! points
+
+        courbes
+            type = arc_p1 :
+            {
+                left_f1  : { 1 , 2 }
+                up_f1    : { 2 , 3 }
+                right_f1 : { 3 , 4 }
+                down1_f1 : { 4 , 5 }
+                down2_f1 : { 9 , 1 }
+                inter_f1 : { 5 , 7 , 8 , 9 }
+            }
+
+            type = arc_p1 :
+            {
+                down_f2  : { 10 , 6 }
+                inter_f2 : {  6 , 7 , 8 , 10 }
+            }
+        fin ! courbes
+
+        zones
+            type = 2 :
+            {
+                gas    : { -left_f1  ,
+                           -up_f1    ,
+                           -right_f1 ,
+                           -down1_f1 ,
+                           -inter_f1 ,
+                           -down2_f1 }
+                liquid : {  down_f2  ,
+                            inter_f2 }
+            }
+        fin ! zones
+    fin ! domaine
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! DISCRETISATION
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    discretisation
+        groupe < gas >
+            elements          = taylor6iso
+            npgauss           = 7
+            equation          = navier-stokes
+            maillage          = pseudo_solide
+            modele_structurel = saint-venant_kirchhoff
+            proprietes
+                densite   = 1.2
+                viscosite = 1.81d-5
+                gravite   = { 0.0d0 , 0.0d0 }
+                lambda    = 1.0d0
+                mu        = 1.0d0
+            fin ! proprietes
+        fin ! groupe < gas >
+
+        groupe < liquid >
+            elements          = taylor6iso
+            npgauss           = 7
+            equation          = navier-stokes
+            maillage          = pseudo_solide
+            modele_structurel = saint-venant_kirchhoff
+            proprietes
+                densite   = 1.2e3
+                viscosite = 1.81d-0
+                gravite   = { 0.0d0 , 0.0d0 }
+                lambda    = 1.0d0
+                mu        = 1.0d0
+            fin ! proprietes
+        fin ! groupe < liquid >
+    fin ! discretisation
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! CONDITIONS_LIMITES
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    conditions_limites
+        dirichlet
+            courbe < left_f1 >
+                {
+                    XSI = 0.0d0
+                }
+            fin
+            courbe < right_f1 >
+                {
+                    XSI = 0.0d0
+                }
+            fin
+            courbe < up_f1 >
+                {
+                    ETA = 0.0d0
+                }
+            fin
+            courbe < down1_f1 >
+                {
+                    V   = 0.0d0
+                    ETA = 0.0d0
+                }
+            fin
+            courbe < down2_f1 >
+                {
+                    V   = 0.0d0
+                    ETA = 0.0d0
+                }
+            fin
+            courbe < down_f2 >
+                {
+                    V   = 0.0d0
+                    ETA = 0.0d0
+                }
+            fin
+        fin ! dirichlet
+
+        neumann
+            courbe < left_f1 >
+                {
+                    U   = 0.0d0
+                    V   = 0.0d0
+                    ETA = libre
+                }
+                element = lin3iso
+                npgauss = 3
+            fin
+            courbe < right_f1 >
+                {
+                    U   = 0.0d0
+                    V   = 0.0d0
+                    ETA = libre
+                }
+                element = lin3iso
+                npgauss = 3
+            fin
+            courbe < up_f1 >
+                {
+                    U   = 0.0d0
+                    V   = 0.0d0
+                    XSI = libre
+                }
+                element = lin3iso
+                npgauss = 3
+            fin
+            courbe < down1_f1 >
+                {
+                    U   = libre
+                    XSI = libre
+                }
+                element = lin3iso
+                npgauss = 3
+            fin
+            courbe < down2_f1 >
+                {
+                    U   = libre
+                    XSI = libre
+                }
+                element = lin3iso
+                npgauss = 3
+            fin
+            courbe < down_f2 >
+                {
+                    U   = libre
+                    XSI = libre
+                }
+                element = lin3iso
+                npgauss = 3
+            fin
+            courbe < inter_f1 >
+                {
+                    U   = libre
+                    V   = libre
+                    XSI = libre
+                    ETA = libre
+                }
+                element = lin3iso
+                npgauss = 3
+            fin
+            courbe < inter_f2 >
+                {
+                    U   = libre
+                    V   = libre
+                    XSI = libre
+                    ETA = libre
+                }
+                element = lin3iso
+                npgauss = 3
+            fin
+        fin ! neumann
+    fin ! conditions_limites
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! INTERFACE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    interface
+        courbe { inter_f1 , inter_f2 }
+            element    = lin36iso
+            equation   = fluide_fluide
+            regularite = equal_spacing
+            npgauss    = 3
+            proprietes
+                rth      = 0.0d0
+                sigma    = 0.2d0
+                angleg   = 90.0d0
+                angled   = 90.0d0
+                tangentg = {  1.0d0 , 0.0d0 }
+                tangentd = { -1.0d0 , 0.0d0 }
+            fin ! proprietes
+        fin ! courbe
+    fin ! interface
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! REACTION
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    reaction
+        entite <inter_f1> = { inter_f1 }
+        entite <inter_f2> = { inter_f2 }
+    fin ! reaction
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! TRANSITOIRE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    transitoire
+        integration   = BDF
+        type_int      = 1-2
+        pas_variable  = adaptatif
+        tolerance_abs = 1.d-7
+        tolerance_rel = 1.d-6
+        demarrage_int = basique
+        options_bdf
+            taille_demarrage = 0.05d0
+            rejeter_pas      = oui
+            taille           = { min = 0.0000001d0 , max = 5.0d0 }
+            print_cadsol     = oui
+            rapport          = oui
+            estimateur       = troncature
+            controlleur      = classique
+            predicteur       = non
+        fin ! options_bdf
+        T_initial     = 0.0d0
+        T_final       = 2.0d2
+        bloc_post     = { < 0.0d0 1000.0d0 1.0d0 > }
+        bloc_print    = { < 0 0 0 > }
+    fin ! transitoire
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! CONTROLE
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    controle
+        resoluteur
+            sortie      = CADYF
+            mode        = execution
+            cond_init   = nulle
+            interpolant = quadratique
+            impression
+                globale     = resultat
+                noeuds      = non
+                elements    = non
+                contraintes = non
+                cond_init   = non
+                post        = vtk
+            fin ! impression
+        fin ! resoluteur
+        mailleur
+            impression       = non
+            mode             = mailler
+            extrapolation    = 1.0d0
+            renumerotation   = profil
+            post_traitement  = oui
+            relaxation
+                type        = laplacian
+                cycle       = 3
+                application = globale
+            fin ! relaxation
+        fin ! mailleur
+    fin ! controle
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! SOLUTION
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    solution
+        methode_1        = Newton
+        methode_2        = Newton
+        N*methode1       = 5
+        maximum          = 10
+        acceleration     = 1.d0
+        err_rel_locale   = 1.0e-12
+        residu_local     = 1.0e-12
+        solveur_lineaire = mklpardiso64
+        fact_adaptative  = oui
+        fada_tol_redr    = 0.1
+        fada_tol_resi    = 1.0d-5
+    fin ! solution
+
+fin.
