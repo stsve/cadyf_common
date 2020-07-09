@@ -1,0 +1,55 @@
+<CustomFilterDefinitions>
+  <CustomProxyDefinition name="Create MMS diff" group="filters">
+    <CompoundSourceProxy id="36729" servers="1">
+      <Proxy group="filters" type="ProgrammableFilter" id="36441" servers="1" compound_name="ProgrammableFilter2">
+        <Property name="CopyArrays" id="36441.CopyArrays" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="36441.CopyArrays.bool"/>
+        </Property>
+        <Property name="InformationScript" id="36441.InformationScript" number_of_elements="1">
+          <Element index="0" value=""/>
+        </Property>
+        <Property name="Input" id="36441.Input" number_of_elements="1">
+          <Domain name="groups" id="36441.Input.groups"/>
+          <Domain name="input_type" id="36441.Input.input_type"/>
+        </Property>
+        <Property name="OutputDataSetType" id="36441.OutputDataSetType" number_of_elements="1">
+          <Element index="0" value="8"/>
+          <Domain name="enum" id="36441.OutputDataSetType.enum">
+            <Entry value="8" text="Same as Input"/>
+            <Entry value="0" text="vtkPolyData"/>
+            <Entry value="2" text="vtkStructuredGrid"/>
+            <Entry value="3" text="vtkRectilinearGrid"/>
+            <Entry value="4" text="vtkUnstructuredGrid"/>
+            <Entry value="6" text="vtkImageData"/>
+            <Entry value="10" text="vtkUniformGrid"/>
+            <Entry value="13" text="vtkMultiblockDataSet"/>
+            <Entry value="15" text="vtkHierarchicalBoxDataSet"/>
+            <Entry value="19" text="vtkTable"/>
+            <Entry value="33" text="vtkMolecule"/>
+          </Domain>
+        </Property>
+        <Property name="PythonPath" id="36441.PythonPath" number_of_elements="1">
+          <Element index="0" value=""/>
+        </Property>
+        <Property name="Script" id="36441.Script" number_of_elements="1">
+          <Element index="0" value="i = inputs[0]&#xa;o = output&#xa;&#xa;np = i.GetNumberOfPoints()&#xa;&#xa;var = list(i.PointData.keys())&#xa;var.sort()&#xa;var2 = list(var)&#xa;&#xa;def get_var_exa(v):&#xa;    if v + &#x27;EXA&#x27; in var2:&#xa;        return v + &#x27;EXA&#x27;&#xa;    elif v + &#x27;Exa&#x27; in var2:&#xa;        return v + &#x27;Exa&#x27;&#xa;    else:&#xa;        return None&#xa;&#xa;def create_diff(n1,n2):&#xa;    a1 = i.PointData[n1].VTKObject&#xa;    a2 = i.PointData[n2].VTKObject&#xa;    nc = a1.GetNumberOfComponents()&#xa;&#xa;    a = vtk.vtkDoubleArray()&#xa;    a.SetNumberOfComponents(nc)&#xa;    a.SetNumberOfTuples(np)&#xa;    a.SetName(&#x27;Diff&#x27;+n1)&#xa;    for idx in xrange(nc):&#xa;        a.SetComponentName(idx,a1.GetComponentName(idx))&#xa;    for n in xrange(np):&#xa;        t = tuple([v1 - v2 for v1,v2 in zip(a1.GetTuple(n),a2.GetTuple(n))])&#xa;        a.SetTuple(n,t)&#xa;    var2.remove(n1)&#xa;    var2.remove(n2)&#xa;    o.PointData.VTKObject.AddArray(a)&#xa;&#xa;for v in var:&#xa;    if v not in var2 or v[-3:].lower() == &#x27;exa&#x27;:&#xa;        continue&#xa;&#xa;    v2 = get_var_exa(v)&#xa;    if v2: create_diff(v,v2)"/>
+        </Property>
+        <Property name="TimestepValues" id="36441.TimestepValues" number_of_elements="1">
+          <Element index="0" value="0"/>
+        </Property>
+        <Property name="UpdateExtentScript" id="36441.UpdateExtentScript" number_of_elements="1">
+          <Element index="0" value=""/>
+        </Property>
+      </Proxy>
+      <ExposedProperties>
+        <Property name="Input" proxy_name="ProgrammableFilter2" exposed_name="Input"/>
+        <Property name="Script" proxy_name="ProgrammableFilter2" exposed_name="Script"/>
+      </ExposedProperties>
+      <OutputPort name="Output" proxy="ProgrammableFilter2" port_index="0"/>
+      <Hints>
+        <ShowInMenu/>
+      </Hints>
+    </CompoundSourceProxy>
+  </CustomProxyDefinition>
+</CustomFilterDefinitions>

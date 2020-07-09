@@ -1,0 +1,293 @@
+<CustomFilterDefinitions>
+  <CustomProxyDefinition name="Extract Interface" group="filters">
+    <CompoundSourceProxy id="10861" servers="1">
+      <Proxy group="filters" type="PVConnectivityFilter" id="8569" servers="1" compound_name="Connectivity1">
+        <Property name="ClosestPoint" id="8569.ClosestPoint" number_of_elements="3">
+          <Element index="0" value="0"/>
+          <Element index="1" value="0"/>
+          <Element index="2" value="0"/>
+        </Property>
+        <Property name="ColorRegions" id="8569.ColorRegions" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="8569.ColorRegions.bool"/>
+        </Property>
+        <Property name="ExtractionMode" id="8569.ExtractionMode" number_of_elements="1">
+          <Element index="0" value="5"/>
+          <Domain name="enum" id="8569.ExtractionMode.enum">
+            <Entry value="4" text="Extract Largest Region"/>
+            <Entry value="5" text="Extract All Regions"/>
+            <Entry value="6" text="Extract Closest Point Region"/>
+          </Domain>
+        </Property>
+        <Property name="Input" id="8569.Input" number_of_elements="1">
+          <Domain name="groups" id="8569.Input.groups"/>
+          <Domain name="input_type" id="8569.Input.input_type"/>
+        </Property>
+        <Property name="RegionIdAssignmentMode" id="8569.RegionIdAssignmentMode" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="enum" id="8569.RegionIdAssignmentMode.enum">
+            <Entry value="0" text="Unspecified"/>
+            <Entry value="1" text="Cell Count Descending"/>
+            <Entry value="2" text="Cell Count Ascending"/>
+          </Domain>
+        </Property>
+      </Proxy>
+      <Proxy group="filters" type="DataSetSurfaceFilter" id="9536" servers="1" compound_name="ExtractSurface1">
+        <Property name="Input" id="9536.Input" number_of_elements="1">
+          <Proxy value="9076" output_port="0"/>
+          <Domain name="groups" id="9536.Input.groups"/>
+          <Domain name="input_type" id="9536.Input.input_type"/>
+        </Property>
+        <Property name="NonlinearSubdivisionLevel" id="9536.NonlinearSubdivisionLevel" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="range" id="9536.NonlinearSubdivisionLevel.range"/>
+        </Property>
+        <Property name="PieceInvariant" id="9536.PieceInvariant" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="9536.PieceInvariant.bool"/>
+        </Property>
+      </Proxy>
+      <Proxy group="filters" type="DataSetSurfaceFilter" id="9964" servers="1" compound_name="ExtractSurface2">
+        <Property name="Input" id="9964.Input" number_of_elements="1">
+          <Proxy value="9306" output_port="0"/>
+          <Domain name="groups" id="9964.Input.groups"/>
+          <Domain name="input_type" id="9964.Input.input_type"/>
+        </Property>
+        <Property name="NonlinearSubdivisionLevel" id="9964.NonlinearSubdivisionLevel" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="range" id="9964.NonlinearSubdivisionLevel.range"/>
+        </Property>
+        <Property name="PieceInvariant" id="9964.PieceInvariant" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="9964.PieceInvariant.bool"/>
+        </Property>
+      </Proxy>
+      <Proxy group="filters" type="FeatureEdges" id="9750" servers="1" compound_name="FeatureEdges1">
+        <Property name="BoundaryEdges" id="9750.BoundaryEdges" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="9750.BoundaryEdges.bool"/>
+        </Property>
+        <Property name="Coloring" id="9750.Coloring" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="9750.Coloring.bool"/>
+        </Property>
+        <Property name="FeatureAngle" id="9750.FeatureAngle" number_of_elements="1">
+          <Element index="0" value="30"/>
+          <Domain name="range" id="9750.FeatureAngle.range"/>
+        </Property>
+        <Property name="FeatureEdges" id="9750.FeatureEdges" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="9750.FeatureEdges.bool"/>
+        </Property>
+        <Property name="Input" id="9750.Input" number_of_elements="1">
+          <Proxy value="9536" output_port="0"/>
+          <Domain name="groups" id="9750.Input.groups"/>
+          <Domain name="input_type" id="9750.Input.input_type"/>
+        </Property>
+        <Property name="ManifoldEdges" id="9750.ManifoldEdges" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="9750.ManifoldEdges.bool"/>
+        </Property>
+        <Property name="NonManifoldEdges" id="9750.NonManifoldEdges" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="9750.NonManifoldEdges.bool"/>
+        </Property>
+      </Proxy>
+      <Proxy group="filters" type="FeatureEdges" id="10178" servers="1" compound_name="FeatureEdges2">
+        <Property name="BoundaryEdges" id="10178.BoundaryEdges" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="10178.BoundaryEdges.bool"/>
+        </Property>
+        <Property name="Coloring" id="10178.Coloring" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="10178.Coloring.bool"/>
+        </Property>
+        <Property name="FeatureAngle" id="10178.FeatureAngle" number_of_elements="1">
+          <Element index="0" value="30"/>
+          <Domain name="range" id="10178.FeatureAngle.range"/>
+        </Property>
+        <Property name="FeatureEdges" id="10178.FeatureEdges" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="10178.FeatureEdges.bool"/>
+        </Property>
+        <Property name="Input" id="10178.Input" number_of_elements="1">
+          <Proxy value="9964" output_port="0"/>
+          <Domain name="groups" id="10178.Input.groups"/>
+          <Domain name="input_type" id="10178.Input.input_type"/>
+        </Property>
+        <Property name="ManifoldEdges" id="10178.ManifoldEdges" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="10178.ManifoldEdges.bool"/>
+        </Property>
+        <Property name="NonManifoldEdges" id="10178.NonManifoldEdges" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="10178.NonManifoldEdges.bool"/>
+        </Property>
+      </Proxy>
+      <Proxy group="filters" type="ResampleWithDataset" id="10417" servers="1" compound_name="ResampleWithDataset1">
+        <Property name="CategoricalData" id="10417.CategoricalData" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="10417.CategoricalData.bool"/>
+        </Property>
+        <Property name="CellLocator" id="10417.CellLocator" number_of_elements="1">
+          <Proxy value="10414"/>
+          <Domain name="groups" id="10417.CellLocator.groups"/>
+          <Domain name="proxy_list" id="10417.CellLocator.proxy_list">
+            <Proxy value="10414"/>
+            <Proxy value="10415"/>
+            <Proxy value="10416"/>
+          </Domain>
+        </Property>
+        <Property name="ComputeTolerance" id="10417.ComputeTolerance" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="10417.ComputeTolerance.bool"/>
+        </Property>
+        <Property name="Input" id="10417.Input" number_of_elements="1">
+          <Proxy value="10178" output_port="0"/>
+          <Domain name="groups" id="10417.Input.groups"/>
+          <Domain name="input_type" id="10417.Input.input_type"/>
+        </Property>
+        <Property name="MarkBlankPointsAndCells" id="10417.MarkBlankPointsAndCells" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="10417.MarkBlankPointsAndCells.bool"/>
+        </Property>
+        <Property name="PassCellArrays" id="10417.PassCellArrays" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="10417.PassCellArrays.bool"/>
+        </Property>
+        <Property name="PassFieldArrays" id="10417.PassFieldArrays" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="10417.PassFieldArrays.bool"/>
+        </Property>
+        <Property name="PassPointArrays" id="10417.PassPointArrays" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="10417.PassPointArrays.bool"/>
+        </Property>
+        <Property name="Source" id="10417.Source" number_of_elements="1">
+          <Proxy value="9750" output_port="0"/>
+          <Domain name="groups" id="10417.Source.groups"/>
+          <Domain name="input_type" id="10417.Source.input_type"/>
+        </Property>
+        <Property name="Tolerance" id="10417.Tolerance" number_of_elements="1">
+          <Element index="0" value="2.220446049250313e-16"/>
+          <Domain name="range" id="10417.Tolerance.range"/>
+        </Property>
+      </Proxy>
+      <Proxy group="filters" type="Threshold" id="9076" servers="1" compound_name="Threshold1">
+        <Property name="AllScalars" id="9076.AllScalars" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="9076.AllScalars.bool"/>
+        </Property>
+        <Property name="Input" id="9076.Input" number_of_elements="1">
+          <Proxy value="8569" output_port="0"/>
+          <Domain name="groups" id="9076.Input.groups"/>
+          <Domain name="input_array" id="9076.Input.input_array"/>
+          <Domain name="input_type" id="9076.Input.input_type"/>
+        </Property>
+        <Property name="Invert" id="9076.Invert" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="9076.Invert.bool"/>
+        </Property>
+        <Property name="SelectInputScalars" id="9076.SelectInputScalars" number_of_elements="5">
+          <Element index="0" value=""/>
+          <Element index="1" value=""/>
+          <Element index="2" value=""/>
+          <Element index="3" value="0"/>
+          <Element index="4" value="RegionId"/>
+          <Domain name="array_list" id="9076.SelectInputScalars.array_list">
+            <String text="RegionId"/>
+          </Domain>
+        </Property>
+        <Property name="ThresholdBetween" id="9076.ThresholdBetween" number_of_elements="2">
+          <Element index="0" value="0"/>
+          <Element index="1" value="0.9"/>
+          <Domain name="range" id="9076.ThresholdBetween.range"/>
+        </Property>
+        <Property name="UseContinuousCellRange" id="9076.UseContinuousCellRange" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="9076.UseContinuousCellRange.bool"/>
+        </Property>
+      </Proxy>
+      <Proxy group="filters" type="Threshold" id="9306" servers="1" compound_name="Threshold2">
+        <Property name="AllScalars" id="9306.AllScalars" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="9306.AllScalars.bool"/>
+        </Property>
+        <Property name="Input" id="9306.Input" number_of_elements="1">
+          <Proxy value="8569" output_port="0"/>
+          <Domain name="groups" id="9306.Input.groups"/>
+          <Domain name="input_array" id="9306.Input.input_array"/>
+          <Domain name="input_type" id="9306.Input.input_type"/>
+        </Property>
+        <Property name="Invert" id="9306.Invert" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="9306.Invert.bool"/>
+        </Property>
+        <Property name="SelectInputScalars" id="9306.SelectInputScalars" number_of_elements="5">
+          <Element index="0" value=""/>
+          <Element index="1" value=""/>
+          <Element index="2" value=""/>
+          <Element index="3" value="0"/>
+          <Element index="4" value="RegionId"/>
+          <Domain name="array_list" id="9306.SelectInputScalars.array_list">
+            <String text="RegionId"/>
+          </Domain>
+        </Property>
+        <Property name="ThresholdBetween" id="9306.ThresholdBetween" number_of_elements="2">
+          <Element index="0" value="0.1"/>
+          <Element index="1" value="10"/>
+          <Domain name="range" id="9306.ThresholdBetween.range"/>
+        </Property>
+        <Property name="UseContinuousCellRange" id="9306.UseContinuousCellRange" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="9306.UseContinuousCellRange.bool"/>
+        </Property>
+      </Proxy>
+      <Proxy group="filters" type="Threshold" id="10631" servers="1" compound_name="Threshold3">
+        <Property name="AllScalars" id="10631.AllScalars" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="10631.AllScalars.bool"/>
+        </Property>
+        <Property name="Input" id="10631.Input" number_of_elements="1">
+          <Proxy value="10417" output_port="0"/>
+          <Domain name="groups" id="10631.Input.groups"/>
+          <Domain name="input_array" id="10631.Input.input_array"/>
+          <Domain name="input_type" id="10631.Input.input_type"/>
+        </Property>
+        <Property name="Invert" id="10631.Invert" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="10631.Invert.bool"/>
+        </Property>
+        <Property name="SelectInputScalars" id="10631.SelectInputScalars" number_of_elements="5">
+          <Element index="0" value=""/>
+          <Element index="1" value=""/>
+          <Element index="2" value=""/>
+          <Element index="3" value="0"/>
+          <Element index="4" value="vtkValidPointMask"/>
+          <Domain name="array_list" id="10631.SelectInputScalars.array_list">
+            <String text="vtkValidPointMask"/>
+          </Domain>
+        </Property>
+        <Property name="ThresholdBetween" id="10631.ThresholdBetween" number_of_elements="2">
+          <Element index="0" value="0.1"/>
+          <Element index="1" value="10"/>
+          <Domain name="range" id="10631.ThresholdBetween.range"/>
+        </Property>
+        <Property name="UseContinuousCellRange" id="10631.UseContinuousCellRange" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="10631.UseContinuousCellRange.bool"/>
+        </Property>
+      </Proxy>
+      <Proxy group="cell_locators" type="StaticCellLocator" id="10414" servers="1" compound_name="auto_10414"/>
+      <ExposedProperties>
+        <Property name="ThresholdBetween" proxy_name="Threshold1" exposed_name="Threshold Range 1"/>
+        <Property name="ThresholdBetween" proxy_name="Threshold2" exposed_name="Threshold Range 2"/>
+        <Property name="Input" proxy_name="Connectivity1" exposed_name="input"/>
+      </ExposedProperties>
+      <OutputPort name="output" proxy="Threshold3" port_index="0"/>
+      <Hints>
+        <ShowInMenu/>
+      </Hints>
+    </CompoundSourceProxy>
+  </CustomProxyDefinition>
+</CustomFilterDefinitions>
